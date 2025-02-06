@@ -1,0 +1,62 @@
+package guru.springframework.spring6restmvc.services;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
+import guru.springframework.spring6restmvc.models.Customer;
+
+@Service
+public class CustomerServiceImp implements CustomerService {
+
+  private Map<UUID, Customer> customerMap;
+
+  public CustomerServiceImp() {
+
+    this.customerMap = new HashMap<>();
+
+    Customer customer1 = Customer.builder()
+        .id(UUID.randomUUID())
+        .customerName("John Doe")
+        .version("1")
+        .createdDate(LocalDateTime.now())
+        .updateDate(LocalDateTime.now())
+        .build();
+
+    Customer customer2 = Customer.builder()
+        .id(UUID.randomUUID())
+        .customerName("Jane Doe")
+        .version("1")
+        .createdDate(LocalDateTime.now())
+        .updateDate(LocalDateTime.now())
+        .build();
+
+    Customer customer3 = Customer.builder()
+        .id(UUID.randomUUID())
+        .customerName("Tommy Cooper")
+        .version("1")
+        .createdDate(LocalDateTime.now())
+        .updateDate(LocalDateTime.now())
+        .build();
+
+    this.customerMap.put(customer1.getId(), customer1);
+    this.customerMap.put(customer2.getId(), customer2);
+    this.customerMap.put(customer3.getId(), customer3);
+  }
+
+  @Override
+  public List<Customer> listCustomers() {
+    return new ArrayList<>(customerMap.values());
+  }
+
+  @Override
+  public Customer getCustomerById(UUID customerId) {
+    return customerMap.get(customerId);
+  }
+
+}
