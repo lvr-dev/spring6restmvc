@@ -6,9 +6,9 @@ import java.util.UUID;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,7 +43,13 @@ public class CustomerController {
     Customer savedCustomer = customerService.saveNewCustomer(customer);
 
     HttpHeaders httpHeaders = new HttpHeaders();
-    httpHeaders.add("Location", "api/v1/customers/" + savedCustomer.getId().toString()); 
-    return new ResponseEntity(httpHeaders, HttpStatus.CREATED); 
+    httpHeaders.add("Location", "api/v1/customers/" + savedCustomer.getId().toString());
+    return new ResponseEntity(httpHeaders, HttpStatus.CREATED);
+  }
+
+  @PutMapping("{customerId}")
+  public ResponseEntity handlePut(@PathVariable UUID customerId, @RequestBody Customer customer) {
+    customerService.updateCustomer(customerId, customer);
+    return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
 }
