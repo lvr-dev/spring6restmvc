@@ -57,6 +57,21 @@ public class CustomerServiceImp implements CustomerService {
   @Override
   public Customer getCustomerById(UUID customerId) {
     return customerMap.get(customerId);
+
+  }
+
+  @Override
+  public Customer saveNewCustomer(Customer customer) {
+    Customer savedCustomer = Customer.builder()
+        .id(UUID.randomUUID())
+        .customerName(customer.getCustomerName())
+        .version(customer.getVersion())
+        .createdDate(LocalDateTime.now())
+        .updateDate(LocalDateTime.now())
+        .build();
+
+    customerMap.put(savedCustomer.getId(),  savedCustomer);    
+    return savedCustomer;
   }
 
 }
