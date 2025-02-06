@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -50,6 +51,12 @@ public class CustomerController {
   @PutMapping("{customerId}")
   public ResponseEntity handlePut(@PathVariable UUID customerId, @RequestBody Customer customer) {
     customerService.updateCustomer(customerId, customer);
+    return new ResponseEntity(HttpStatus.NO_CONTENT);
+  }
+
+  @DeleteMapping("{customerId}")
+  public ResponseEntity deleteCustomerById(@PathVariable UUID customerId) {
+    customerService.deleteCustomerById(customerId);
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
 }
