@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import guru.springframework.spring6restmvc.models.Beer;
 import guru.springframework.spring6restmvc.services.BeerService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/beers")
 public class BeerController {
