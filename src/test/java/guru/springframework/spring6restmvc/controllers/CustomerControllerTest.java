@@ -21,7 +21,7 @@ import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 
-import guru.springframework.spring6restmvc.models.Customer;
+import guru.springframework.spring6restmvc.models.CustomerDTO;
 import guru.springframework.spring6restmvc.services.CustomerService;
 import guru.springframework.spring6restmvc.services.CustomerServiceImp;
 
@@ -48,7 +48,7 @@ public class CustomerControllerTest {
   ArgumentCaptor<UUID> uuidArgumentCaptor;
 
   @Captor
-  ArgumentCaptor<Customer> customArgumentCaptor;
+  ArgumentCaptor<CustomerDTO> customArgumentCaptor;
 
   @BeforeEach
   void setUp() {
@@ -57,7 +57,7 @@ public class CustomerControllerTest {
 
   @Test
   void testGetCustomerById() throws Exception {
-    Customer customer = customerServiceImpl.listCustomers().get(0);
+    CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
 
     given(customerService.getCustomerById(customer.getId())).willReturn(customer);
     
@@ -90,11 +90,11 @@ public class CustomerControllerTest {
 
   @Test
   void testHandlePost() throws Exception {
-      Customer customer = customerServiceImpl.listCustomers().get(0);
+      CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
       customer.setVersion(null);
       customer.setId(null);
 
-      given(customerService.saveNewCustomer(any(Customer.class))).willReturn(customerServiceImpl.listCustomers().get(1));
+      given(customerService.saveNewCustomer(any(CustomerDTO.class))).willReturn(customerServiceImpl.listCustomers().get(1));
 
       mockMvc.perform(post(CustomerController.CUSTOMER_PATH)
               .accept(MediaType.APPLICATION_JSON)
@@ -106,20 +106,20 @@ public class CustomerControllerTest {
 
     @Test
     void testHandlePut() throws Exception {
-      Customer customer = customerServiceImpl.listCustomers().get(0);
+      CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
 
       mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID, customer.getId())
         .accept(MediaType.APPLICATION_JSON)
         .contentType(MediaType.APPLICATION_JSON)
         .content(objectMapper.writeValueAsString(customer)));
 
-      verify(customerService).updateCustomer(uuidArgumentCaptor.capture(), any(Customer.class));
+      verify(customerService).updateCustomer(uuidArgumentCaptor.capture(), any(CustomerDTO.class));
       assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
 
     @Test
     void testDeleteById() throws Exception {
-      Customer customer = customerServiceImpl.listCustomers().get(0);
+      CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
 
       mockMvc.perform(delete(CustomerController.CUSTOMER_PATH_ID, customer.getId())
           .accept(MediaType.APPLICATION_JSON))
@@ -131,7 +131,7 @@ public class CustomerControllerTest {
 
     @Test
     void testPatchCustomerById() throws Exception {
-      Customer customer = customerServiceImpl.listCustomers().get(0);
+      CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
 
       Map<String, Object> customerMap = new HashMap<>();
       customerMap.put("customerName", "Theo Janssen");
