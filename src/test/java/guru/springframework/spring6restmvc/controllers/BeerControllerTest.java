@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
@@ -61,7 +62,7 @@ public class BeerControllerTest {
   void testGetBeerById() throws Exception {
     Beer beer = beerServiceImpl.listBeers().get(0);
 
-    given(beerService.getBeerById(beer.getId())).willReturn(beer);
+    given(beerService.getBeerById(beer.getId())).willReturn(Optional.of(beer));
     
     mockMvc.perform(get(BeerController.BEER_PATH_ID, beer.getId())
       .accept(MediaType.APPLICATION_JSON))
@@ -69,6 +70,14 @@ public class BeerControllerTest {
       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
       .andExpect(jsonPath("$.id", is(beer.getId().toString())))
       .andExpect(jsonPath("$.beerName", is(beer.getBeerName())));
+  }
+
+  @Test
+  void testGetBeerByIdNotFound() throws Exception {
+
+    given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.empty());
+    mockMvc.perform(get(BeerController.BEER_PATH_ID, UUID.randomUUID()))
+      .andExpect(status().isNotFound());
   }
 
   @Test

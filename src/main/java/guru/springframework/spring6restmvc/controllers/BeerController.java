@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +41,7 @@ public class BeerController {
 
     log.debug("get beer by id in controller.");
 
-    return beerService.getBeerById(beerId);
+    return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
   }
 
   @PostMapping(BEER_PATH)
@@ -71,4 +72,7 @@ public class BeerController {
     beerService.patchBeerById(beerId, beer);
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
+
+
+
 }

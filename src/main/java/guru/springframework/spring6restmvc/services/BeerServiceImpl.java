@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -72,8 +73,8 @@ public class BeerServiceImpl implements BeerService {
   }
 
   @Override
-  public Beer getBeerById(UUID beerId) {
-    return beerMap.get(beerId);
+  public Optional<Beer> getBeerById(UUID beerId) {
+    return Optional.of(beerMap.get(beerId));
   }
 
   @Override
