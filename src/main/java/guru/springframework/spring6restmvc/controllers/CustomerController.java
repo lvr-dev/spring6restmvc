@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import guru.springframework.spring6restmvc.models.Customer;
+import guru.springframework.spring6restmvc.models.CustomerDTO;
 import guru.springframework.spring6restmvc.services.CustomerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,19 +30,19 @@ public class CustomerController {
   public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{customerId}";
 
   @GetMapping(CUSTOMER_PATH)
-  public List<Customer> getCustomers() {
+  public List<CustomerDTO> getCustomers() {
     return customerService.listCustomers();
   }
 
   @GetMapping(CUSTOMER_PATH_ID)
-  public Customer getCustomer(@PathVariable("customerId") UUID customerId) {
+  public CustomerDTO getCustomer(@PathVariable("customerId") UUID customerId) {
     log.debug("Inside getCustomerId in the CustomerController");
     return customerService.getCustomerById(customerId);
   }
 
   @PostMapping(CUSTOMER_PATH)
-  public ResponseEntity handlePost(@RequestBody Customer customer) {
-    Customer savedCustomer = customerService.saveNewCustomer(customer);
+  public ResponseEntity handlePost(@RequestBody CustomerDTO customer) {
+    CustomerDTO savedCustomer = customerService.saveNewCustomer(customer);
 
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.add("Location", "api/v1/customers/" + savedCustomer.getId().toString());
@@ -50,7 +50,7 @@ public class CustomerController {
   }
 
   @PutMapping(CUSTOMER_PATH_ID)
-  public ResponseEntity handlePut(@PathVariable UUID customerId, @RequestBody Customer customer) {
+  public ResponseEntity handlePut(@PathVariable UUID customerId, @RequestBody CustomerDTO customer) {
     customerService.updateCustomer(customerId, customer);
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
@@ -62,7 +62,7 @@ public class CustomerController {
   }
 
   @PatchMapping(CUSTOMER_PATH_ID)
-  public ResponseEntity patchCustomerById(@PathVariable UUID customerId, @RequestBody Customer customer) {
+  public ResponseEntity patchCustomerById(@PathVariable UUID customerId, @RequestBody CustomerDTO customer) {
     customerService.patchCustomerById(customerId, customer);
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
