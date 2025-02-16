@@ -51,13 +51,17 @@ public class CustomerController {
 
   @PutMapping(CUSTOMER_PATH_ID)
   public ResponseEntity handlePut(@PathVariable UUID customerId, @RequestBody CustomerDTO customer) {
-    customerService.updateCustomer(customerId, customer);
+    if (customerService.updateCustomerById(customerId, customer).isEmpty()) {
+      throw new NotFoundException();
+    }
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
 
   @DeleteMapping(CUSTOMER_PATH_ID)
   public ResponseEntity deleteCustomerById(@PathVariable UUID customerId) {
-    customerService.deleteCustomerById(customerId);
+    if (!customerService.deleteCustomerById(customerId)) {
+      throw new NotFoundException();
+    }
     return new ResponseEntity(HttpStatus.NO_CONTENT);
   }
 

@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
@@ -59,7 +60,7 @@ public class CustomerControllerTest {
   void testGetCustomerById() throws Exception {
     CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
 
-    given(customerService.getCustomerById(customer.getId())).willReturn(customer);
+    given(customerService.getCustomerById(customer.getId())).willReturn(Optional.of(customer));
     
     mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, customer.getId())
       .accept(MediaType.APPLICATION_JSON))
@@ -72,7 +73,7 @@ public class CustomerControllerTest {
   @Test
   void testGetCustomerByIdNotFound() throws Exception {
     
-     given(customerService.getCustomerById(any(UUID.class))).willThrow(NotFoundException.class);
+     given(customerService.getCustomerById(any(UUID.class))).willReturn(Optional.empty());
      mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID()))
           .andExpect(status().isNotFound());
   }
@@ -108,18 +109,25 @@ public class CustomerControllerTest {
     void testHandlePut() throws Exception {
       CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
 
-      mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID, customer.getId())
-        .accept(MediaType.APPLICATION_JSON)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(customer)));
+      given(customerService.updateCustomerById(any(), any())).willReturn(Optional.of(CustomerDTO.builder()
+              .build()));
 
-      verify(customerService).updateCustomer(uuidArgumentCaptor.capture(), any(CustomerDTO.class));
+      mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID, customer.getId())
+          .content(objectMapper.writeValueAsString(customer))
+          .contentType(MediaType.APPLICATION_JSON)
+          .accept(MediaType.APPLICATION_JSON))
+          .andExpect(status().isNoContent());
+
+      verify(customerService).updateCustomerById(uuidArgumentCaptor.capture(), any(CustomerDTO.class));
+
       assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
     }
 
     @Test
     void testDeleteById() throws Exception {
       CustomerDTO customer = customerServiceImpl.listCustomers().get(0);
+
+      given(customerService.deleteCustomerById(any())).willReturn(true);
 
       mockMvc.perform(delete(CustomerController.CUSTOMER_PATH_ID, customer.getId())
           .accept(MediaType.APPLICATION_JSON))
